@@ -207,21 +207,21 @@ module "sg-3" {
           protocol        = "tcp"
           to_port         = 3306
           security_groups = [lookup(module.sg-2.sg-id ,"web-sg", null), lookup(module.sg-2.sg-id ,"ami-sg", null)]
-
-        }
+ }
 
       ]
-
-      
-
-      }
+}
   
 }
 }
 module "rds" {
   source = "./module/rds"
-  dbname = "db1"
-  username = "admin"
+  allocated_storage = "20"
+  engine = "mysql"
+  engine_version = "8.0"
+  instance_class = "db.t3.micro"
+  db_name = "db2"
+  username = "admin" 
   password = "Tushar1234"
   rds-az = "ap-northeast-1a"
   sgrds = [lookup(module.sg-3.sg-id, "rds-sg", null)]
@@ -236,12 +236,14 @@ module "ami-server" {
       subnet_id = lookup(module.vpc-1.subnet-id, "pub-snet-1", null)
     }
   }
-  db_user = "tushar"
+  db_name = "db2"
+  db_user = "admin"
   db_password = "Tushar1234"
   db_host = module.rds.rds-endpoint
   sg-ami = [lookup(module.sg-2.sg-id, "ami-sg" ,null)]
   created-instance-id = lookup(module.ami-server.ami-s-id, "g-server", null)
 }
+
 
 
 module "alb" {
@@ -270,6 +272,7 @@ module "asg" {
   instance_type = "t2.micro"
   key-name = "TOK"
   lt-sg = [lookup(module.sg-2.sg-id, "web-sg", null)]
+
  
 
 asg-zones = ["ap-northeast-1a", "ap-northeast-1d"]

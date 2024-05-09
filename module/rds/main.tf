@@ -1,9 +1,9 @@
 resource "aws_db_instance" "database1" {
-  allocated_storage    = 20
-  engine               = "mysql"
-  engine_version       = "8.0"
-  instance_class       = "db.t3.micro"
-  db_name              = var.dbname
+  allocated_storage    = var.allocated_storage
+  engine               = var.engine
+  engine_version       = var.engine_version          #"8.0"
+  instance_class       = var.instance_class         #"db.t3.micro"
+  db_name              = var.db_name
   username             = var.username
   password             = var.password
   skip_final_snapshot  = true
